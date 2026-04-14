@@ -1,0 +1,8 @@
+📚 API Reference
+For detailed endpoint documentation, please refer to our API Reference Guide.
+
+POST /api/v1/notarize - Anchor a document hash.
+
+GET /api/v1/verify/{documentHash} - Verify a document hash and retrieve the blockchain transaction.
+
+POST /api/v1/ipfs/store - (Optional) Store an encrypted payload on IPFS.
