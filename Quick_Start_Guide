@@ -1,0 +1,91 @@
+🚀 Quick Start
+Prerequisites
+An active Web3Notary™ API Key (Get one from your Developer Dashboard).
+
+A basic HTTP client in your language of choice.
+
+Base URLs
+Sandbox (Testnet): https://ubitquity.io/web3notary/api/sandbox
+
+Production (Mainnet): https://ubitquity.io/web3notary/api/mainnet
+
+💻 Code Examples
+Here are examples of how to generate a document hash locally and send it to the Web3Notary API.
+
+Node.js Example
+JavaScript
+const crypto = require('crypto');
+const fs = require('fs');
+const axios = require('axios');
+
+async function notarizeDocument(filePath) {
+    // 1. Generate SHA-256 Hash of the file locally
+    const fileBuffer = fs.readFileSync(filePath);
+    const hashSum = crypto.createHash('sha256');
+    hashSum.update(fileBuffer);
+    const documentHash = hashSum.digest('hex');
+
+    console.log(`Computed Hash: ${documentHash}`);
+
+    // 2. Send the hash to Web3Notary
+    try {
+        const response = await axios.post('https://ubitquity.io/web3notary/api/sandbox/v1/notarize', {
+            documentHash: documentHash,
+            notaryId: "RON-98765-TX",
+            metadata: {
+                documentType: "Deed of Trust",
+                jurisdiction: "Texas"
+            }
+        }, {
+            headers: {
+                'Authorization': `Bearer YOUR_API_KEY_HERE`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('Success! Transaction Receipt:', response.data);
+    } catch (error) {
+        console.error('Error anchoring document:', error.response ? error.response.data : error.message);
+    }
+}
+
+notarizeDocument('./signed_contract.pdf');
+Python Example
+Python
+import hashlib
+import requests
+import json
+
+def notarize_document(file_path, api_key):
+    # 1. Generate SHA-256 Hash of the file locally
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+            
+    document_hash = sha256_hash.hexdigest()
+    print(f"Computed Hash: {document_hash}")
+
+    # 2. Send the hash to Web3Notary
+    url = "https://ubitquity.io/web3notary/api/sandbox/v1/notarize"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "documentHash": document_hash,
+        "notaryId": "RON-98765-TX",
+        "metadata": {
+            "documentType": "Deed of Trust",
+            "jurisdiction": "Texas"
+        }
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    
+    if response.status_code == 200:
+        print("Success! Transaction Receipt:", response.json())
+    else:
+        print("Error:", response.json())
+
+notarize_document("./signed_contract.pdf", "YOUR_API_KEY_HERE")
