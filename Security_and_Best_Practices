@@ -1,0 +1,6 @@
+🔒 Security & Best Practices
+Never send unencrypted PII or legal documents directly to the API. Only send cryptographic hashes.
+
+If utilizing the IPFS endpoint, ensure the document is encrypted locally using a strong standard (e.g., AES-256) before uploading. The IPFS network is public by nature.
+
+Store your API keys securely in environment variables. Do not hardcode them into front-end clients.
